@@ -1,6 +1,45 @@
+#ifndef _LINEAR_MATH
+#define _LINEAR_MATH
+
 #include <math.h>
+#include <stdio.h>
 
 #define INDEX(r, c) (r * 4 +c)
+
+typedef struct {
+    float x;
+    float y;
+} vec2;
+
+vec2 vec2_add(vec2 v, vec2 u);
+vec2 vec2_sub(vec2 v, vec2 u);
+
+float vec2_det(vec2 c1, vec2 c2);  // returns the determinant of the matrix whose columns are the parameter vectors
+
+typedef struct {
+    float x, y, z;
+} vec3;
+
+vec3 vec3_add(vec3 v, vec3 u);
+vec3 vec3_sub(vec3 v, vec3 u);
+
+vec2 to_v2(vec3 v);
+
+typedef struct {
+    int x, y;
+} ivec2;
+
+typedef struct {
+    int x, y, z;
+} ivec3;
+
+float dot2(vec2 v, vec2 u);
+float dot3(vec3 v, vec3 u);
+
+ivec2 to_ivec2(vec2 v);
+ivec3 to_ivec3(vec3 v);
+vec2 to_vec2(ivec2 v);
+vec3 to_vec3(ivec3 v);
 
 typedef enum {
     AXIS_X, AXIS_Y, AXIS_Z, AXIS_W
@@ -8,20 +47,31 @@ typedef enum {
 
 typedef union {
     struct {
-        float m11, m12, m13, m14;
-        float m21, m22, m23, m24;
-        float m31, m32, m33, m34;
-        float m41, m42, m43, m44;
+        float m00, m01, m02, m03;
+        float m10, m11, m12, m13;
+        float m20, m21, m22, m23;
+        float m30, m31, m32, m33;
     };
     float m[16];
 } mat4;
 
+mat4 mat4_identity();
+float mat4_get(mat4* m, int row, int col);
+float* mat4_get_ref(mat4* m, int row, int col);
+void mat4_multiply(mat4* dest, mat4* m, mat4* n);
+void mat4_rotation_matrix(mat4* m, float t, Axis axis);
+void mat4_rotate(mat4* m, float t, Axis axis);
+void mat4_ortho(mat4* m, float left, float right, float bottom, float top, float near, float far);
+void mat4_print(mat4* m);
+
+#ifdef LINEAR_MATH_IMPLEMENTATION
+
 mat4 mat4_identity() {
     return (mat4) {
-        .m11 = 1, .m12 = 0, .m13 = 0, .m14 = 0,
-        .m21 = 0, .m22 = 1, .m23 = 0, .m24 = 0,
-        .m31 = 0, .m32 = 0, .m33 = 1, .m34 = 0,
-        .m41 = 0, .m42 = 0, .m43 = 0, .m44 = 1,
+        .m00 = 1, .m01 = 0, .m02 = 0, .m03 = 0,
+        .m10 = 0, .m11 = 1, .m12 = 0, .m13 = 0,
+        .m20 = 0, .m21 = 0, .m22 = 1, .m23 = 0,
+        .m30 = 0, .m31 = 0, .m32 = 0, .m33 = 1,
     };
 }
 
@@ -36,7 +86,6 @@ float* mat4_get_ref(mat4* m, int row, int col) {
 }
 
 void mat4_multiply(mat4* dest, mat4* m, mat4* n) {
-    mat4 result;
     for (int i = 0; i < 4; i++)
     {
         for (int j = 0; j < 4; j++)
@@ -118,11 +167,53 @@ void mat4_print(mat4* m) {
     printf("\n");
 }
 
-typedef struct {
-    float x;
-    float y;
-} vec2;
+ivec2 to_ivec2(vec2 v) {
+    return (ivec2){(int)v.x, (int)v.y};
+}
 
-typedef struct {
-    float x, y, z;
-} vec3;
+ivec3 to_ivec3(vec3 v) {
+    return (ivec3){(int)v.x, (int)v.y, (int)v.z};
+}
+
+vec2 to_vec2(ivec2 v) {
+    return (vec2){(float)v.x, (float)v.y};
+}
+
+vec3 to_vec3(ivec3 v) {
+    return (vec3){(float)v.x, (float)v.y, (float)v.z};
+}
+
+float dot2(vec2 v, vec2 u) {
+    return v.x * u.x + v.y * u.y;
+}
+
+float dot3(vec3 v, vec3 u) {
+    return v.x * u.x + v.y * u.y + v.z * u.z;
+}
+
+vec2 vec2_add(vec2 v, vec2 u) {
+    return (vec2){.x = v.x + u.x, .y = v.y + u.y};
+}
+
+vec2 vec2_sub(vec2 v, vec2 u) {
+    return (vec2){.x = v.x - u.x, .y = v.y - u.y};
+}
+
+vec3 vec3_add(vec3 v, vec3 u) {
+    return (vec3){.x = v.x + u.x, .y = v.y + u.y, .z = v.z + u.z};
+}
+
+vec3 vec3_sub(vec3 v, vec3 u) {
+    return (vec3){.x = v.x - u.x, .y = v.y - u.y, .z = v.z - u.z};
+}
+
+// returns the determinant of the matrix whose columns are the parameter vectors
+float vec2_det(vec2 c1, vec2 c2) {
+    return c1.x * c2.y - c1.y * c2.x;
+}
+
+vec2 to_v2(vec3 v) {return (vec2) {.x = v.x, .y = v.y};}
+
+#endif // LINEAR_MATH_IMPLEMENTATION
+
+#endif // _LINEAR_MATH

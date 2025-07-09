@@ -24,12 +24,12 @@ typedef struct {
     u8 a;
 } Color;
 
-#define BLACK Color{0, 0, 0, 0xff}
-#define WHITE Color{0xff, 0xff, 0xff, 0xff}
+#define BLACK (Color){0, 0, 0, 0xff}
+#define WHITE (Color){0xff, 0xff, 0xff, 0xff}
 
-#define RED   Color{0xff, 0, 0, 0xff}
-#define GREEN Color{0, 0xff, 0, 0xff}
-#define BLUE  Color{0, 0, 0xff, 0xff}
+#define RED   (Color){0xff, 0, 0, 0xff}
+#define GREEN (Color){0, 0xff, 0, 0xff}
+#define BLUE  (Color){0, 0, 0xff, 0xff}
 
 #define COLOR_ARG(color) color.r, color.g, color.b, color.a
 FColor to_fcolor(Color color);
@@ -55,15 +55,28 @@ typedef struct {
     unsigned char r, g, b;
 } rgb_t;
 
+rgb_t color_to_rgb(Color color);
+
 typedef struct {
     unsigned char r, g, b, a;
 } rgba_t;
 
-bool output_ppm(char* file_name, rgb_t* data, int width, int height);
+rgba_t color_to_rgba(Color color);
+
+typedef struct {
+    rgb_t* canvas;
+    int width;
+    int height;
+} Canvas;
+
+Canvas make_canvas(int width, int height);
+
+bool output_ppm(char* file_name, Canvas canvas);
 
 typedef struct {
     char* data;
     size_t size;
+    int error_code;  // 0 if no errors
 } File;
 
 long file_len(FILE* handle);
@@ -71,7 +84,19 @@ File load_file(const char* path);
 
 #ifdef UTILITY_IMPLEMENTATION
 
-bool output_ppm(char* file_name, rgb_t* data, int width, int height) {
+Canvas make_canvas(int width, int height) {
+    Canvas canvas;
+    rgb_t* mem = malloc(width * height * sizeof(rgb_t));
+    if (!mem) panic("Memory allocation failure");
+
+    canvas.canvas = mem;
+    canvas.width = width;
+    canvas.height = height;
+
+    return canvas;
+}
+
+bool output_ppm(char* file_name, Canvas canvas) {
     FILE* output = fopen(file_name, "w");
     if (!output) {
         return false;
@@ -80,11 +105,11 @@ bool output_ppm(char* file_name, rgb_t* data, int width, int height) {
     // header
     const char* magic = "P6";
     const int max_color_value = 255;
-    fprintf(output, "%s %d %d %d\n", magic, width, height, max_color_value);
+    fprintf(output, "%s %d %d %d\n", magic, canvas.width, canvas.height, max_color_value);
 
-    int size = width * height;
+    int size = canvas.width * canvas.height;
     for (int i = 0; i < size; i++) {
-        rgb_t rgb = data[i];
+        rgb_t rgb = canvas.canvas[i];
         fprintf(output, "%c%c%c", rgb.r, rgb.g, rgb.b);
     }
 
@@ -120,7 +145,14 @@ long file_len(FILE* handle) {
 }
 
 File load_file(const char* path) {
+    File file;
+
     FILE* handle = fopen(path, "r");
+    if (!handle) {
+        fprintf(stderr, "Could not open file %s\n", path);
+        file.error_code = 1;
+        return file;
+    }
 
     long file_size = file_len(handle);
     char* data = (char*) malloc(file_size);
@@ -134,7 +166,11 @@ File load_file(const char* path) {
 
     fclose(handle);
 
-    return (File){data, (size_t) file_size};
+    file.data = data;
+    file.size = read;
+    file.error_code = 0;
+
+    return file;
 }
 
 char* number_to_string(double number, int precision /* after decimal point */) {
@@ -216,6 +252,14 @@ const char* ordinal_string(int n) {
 
     snprintf(buffer, sizeof(buffer), "%d%s", n, suffix);
     return buffer;
+}
+
+rgb_t color_to_rgb(Color color) {
+    return (rgb_t) {.r = color.r, .g = color.g, .b = color.b};
+}
+
+rgba_t color_to_rgba(Color color) {
+    return (rgba_t) {.r = color.r, .g = color.g, .b = color.b, .a = color.a};
 }
 
 #endif

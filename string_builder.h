@@ -8,10 +8,13 @@
 extern "C" {
 #endif // __cplusplus
 
+#define MAX(x, y) ((x) > (y) ? (x) : (y))
+
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <assert.h>
 
 typedef struct {
     const char* data;
@@ -33,6 +36,10 @@ typedef struct {
     int size;
     int cap;
 } String_List;
+
+String_List make_string_list(int init_cap);
+void string_list_append(String_List* list, String s);
+String_List split(String s, char delimeter);
 
 typedef struct {
     char* buffer;
@@ -218,6 +225,47 @@ void sb_free(String_Builder* sb) {
 void sb_clear(String_Builder* sb) {
     sb->cursor = 0;
     sb->buffer[0] = '\0';
+}
+
+String_List split(String string, char delimeter) {
+    String_List list = make_string_list(string.size / 10);  // careful with allocation on large inputs
+    int start = 0;
+    for (int i = 0; i < string.size; i++) {
+        if (string.data[i] == delimeter) {
+            String s = (String){.data = string.data + start, .size = i - start};
+            string_list_append(&list, s);
+            start = i + 1;
+        }
+    }
+
+    string_list_append(&list, (String){.data = string.data + start, .size = string.size - start});
+
+    return list;
+}
+
+String_List make_string_list(int init_cap) {
+    int cap = MAX(8, init_cap);
+    String_List list;
+    list.data = malloc(cap * sizeof(String));
+    list.cap = cap;
+    list.size = 0;
+    return list;
+}
+
+void string_list_append(String_List* list, String s) {
+    assert(list->cap);
+
+    if (list->size + 1 >= list->cap) {
+        int new_cap = list->cap * 2;
+        String* ndata = malloc(new_cap);
+        memcpy(ndata, list->data, list->size * sizeof(String));
+        free(list->data);
+        list->data = ndata;
+        list->cap = new_cap;
+    }
+
+    list->data[list->size] = s;
+    list->size += 1;
 }
 
 #endif
