@@ -214,6 +214,11 @@ float vec2_det(vec2 c1, vec2 c2) {
 
 vec2 to_v2(vec3 v) {return (vec2) {.x = v.x, .y = v.y};}
 
+vec2 vec2_normalize(vec2 v) {
+    float len = sqrt(v.x * v.x + v.y * v.y);
+    return (vec2){v.x/len, v.y/len};
+}
+
 #endif // LINEAR_MATH_IMPLEMENTATION
 
 #endif // _LINEAR_MATH

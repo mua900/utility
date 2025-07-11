@@ -2,7 +2,13 @@
 #define _UTILITY_H
 
 #include <stdint.h>
+#include <stdlib.h>
 #include "string_builder.h"
+
+float lerp(float s, float e, float t);
+float smoothstep(float x);
+
+float rand_float();
 
 [[noreturn]]
 void panic(char const * const);
@@ -12,6 +18,8 @@ typedef uint16_t u16;
 typedef uint32_t u32;
 
 #define BIT(x) (1 << x)
+
+#define CLAMP(x, l, h) (((x) > (h)) ? (h) : ((x) < (l)) ? (l) : (x))
 
 typedef struct {
     float r, g, b, a;
@@ -62,6 +70,8 @@ typedef struct {
 } rgba_t;
 
 rgba_t color_to_rgba(Color color);
+
+// @todo textures
 
 typedef struct {
     rgb_t* canvas;
@@ -262,6 +272,20 @@ rgba_t color_to_rgba(Color color) {
     return (rgba_t) {.r = color.r, .g = color.g, .b = color.b, .a = color.a};
 }
 
-#endif
+float rand_float() {
+    float f = (float)rand() / RAND_MAX;
+    return f;
+}
+
+float lerp(float s, float e, float t) {
+    return (1-t)*s + t*s;
+}
+
+float smoothstep(float x) {
+    x = CLAMP(x, 0, 1);
+    return (x * x) * (3 - 2 * x);
+}
+
+#endif  // UTILITY_IMPLEMENTATION
 
 #endif // _UTILITY_H

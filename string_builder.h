@@ -268,7 +268,7 @@ void string_list_append(String_List* list, String s) {
     list->size += 1;
 }
 
-#endif
+#endif  // STRING_IMPLEMENTATION
 
 #ifdef __cplusplus
 }
