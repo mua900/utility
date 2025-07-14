@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include "linear_math.h"
 #include "string_builder.h"
+#include "log.h"
 
 float lerp(float s, float e, float t);
 float smoothstep(float x);
@@ -99,6 +100,8 @@ File load_file(const char* path);
 #include "string_builder.h"
 #define LINEAR_MATH_IMPLEMENTATION
 #include "linear_math.h"
+#define LOG_IMPLEMENTATION
+#include "log.h"
 
 Canvas make_canvas(int width, int height) {
     Canvas canvas;
