@@ -16,6 +16,8 @@ extern "C" {
 #include <stdbool.h>
 #include <assert.h>
 
+#define CSTRING_LENGTH(s) (sizeof(s)-1)
+  
 typedef struct {
     const char* data;
     int size;
