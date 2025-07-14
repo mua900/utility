@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stdlib.h>
+#include "linear_math.h"
 #include "string_builder.h"
 
 float lerp(float s, float e, float t);
@@ -93,6 +94,11 @@ long file_len(FILE* handle);
 File load_file(const char* path);
 
 #ifdef UTILITY_IMPLEMENTATION
+
+#define STRING_BUILDER_IMPLEMENTATION
+#include "string_builder.h"
+#define LINEAR_MATH_IMPLEMENTATION
+#include "linear_math.h"
 
 Canvas make_canvas(int width, int height) {
     Canvas canvas;
