@@ -56,6 +56,7 @@ void panic_and_abort(char const * const msg);
 uint64_t next_multiple_of_wordsize(uint64_t n);
 
 char* number_to_string(double number, int precision /* after decimal point */);
+unsigned int string_to_integer(char* s);
 
 int hash_string(const String* string);
 const char* ordinal_string(int n);
@@ -241,6 +242,20 @@ char* number_to_string(double number, int precision /* after decimal point */) {
   buffer[cursor] = '\0';
 
   return buffer;
+}
+
+unsigned int string_to_integer(char* s) {
+  int result = 0;
+  for (; *s; s++) {
+    result *= 10;
+    if (!('0' <= *s && *s <= '9')) {
+      return -1;
+    }
+    
+    result += *s - '0';
+  }
+
+  return result;
 }
 
 int hash_string(const String* string) {
