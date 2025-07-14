@@ -1,23 +1,23 @@
 #ifndef _LOG_H
 #define _LOG_H
 
-enum Log_Level {
+typedef enum {
     LOG_LEVEL_INFO,
     LOG_LEVEL_WARN,
     LOG_LEVEL_ERROR
-};
+} Log_Level;
 
-void log(Log_Level level, char const * const msg, ...);
+void log_log(Log_Level level, char const * const msg, ...);
 
 #ifndef LOG_SILENCE
 
-#define LOG_INFO(msg)  log(LOG_LEVEL_INFO, msg)
-#define LOG_WARN(msg)  log(LOG_LEVEL_WARN, msg)
-#define LOG_ERROR(msg) log(LOG_LEVEL_ERROR , msg)
+#define LOG_INFO(msg)  log_log(LOG_LEVEL_INFO, msg)
+#define LOG_WARN(msg)  log_log(LOG_LEVEL_WARN, msg)
+#define LOG_ERROR(msg) log_log(LOG_LEVEL_ERROR , msg)
 
-#define LOG_INFOF(msg, ...)  log(LOG_LEVEL_INFO, msg, __VA_ARGS__)
-#define LOG_WARNF(msg, ...)  log(LOG_LEVEL_WARN, msg, __VA_ARGS__)
-#define LOG_ERRORF(msg, ...) log(LOG_LEVEL_ERROR , msg, __VA_ARGS__)
+#define LOG_INFOF(msg, ...)  log_log(LOG_LEVEL_INFO, msg, __VA_ARGS__)
+#define LOG_WARNF(msg, ...)  log_log(LOG_LEVEL_WARN, msg, __VA_ARGS__)
+#define LOG_ERRORF(msg, ...) log_log(LOG_LEVEL_ERROR , msg, __VA_ARGS__)
 
 #else // LOG_SILENCE
 
@@ -33,14 +33,13 @@ void log(Log_Level level, char const * const msg, ...);
 
 #ifdef LOG_IMPLEMENTATION
 
-#include <cstdio>
-#include <cstdarg>
-#include "log.hpp"
+#include <stdio.h>
+#include <stdarg.h>
 
 #define ANSI_END \033[0m
 #define ANSI_RED \033[31;1;1m
 
-void log(Log_Level level, char const * const msg, ...) {
+void log_log(Log_Level level, char const * const msg, ...) {
     char formatted_message[1024];
     va_list args;
     va_start(args, msg);

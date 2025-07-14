@@ -58,7 +58,7 @@ void sb_append_many(String_Builder* sb, String* strings, int n);
 void sb_free(String_Builder* sb);
 void sb_clear(String_Builder* sb);
 
-#ifdef STRING_IMPLEMENTATION
+#ifdef STRING_BUILDER_IMPLEMENTATION
 
 String make_string(const char* s) {
     int len = string_length(s);
@@ -270,7 +270,7 @@ void string_list_append(String_List* list, String s) {
     list->size += 1;
 }
 
-#endif  // STRING_IMPLEMENTATION
+#endif  // STRING_BUILDER_IMPLEMENTATION
 
 #ifdef __cplusplus
 }

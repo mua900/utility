@@ -3,9 +3,24 @@
 
 #include <stdint.h>
 #include <stdlib.h>
+
+
+#ifdef UTILITY_IMPLEMENTATION  // if implementation is defined than define the implementation for the other ones as well
+
+#define STRING_BUILDER_IMPLEMENTATION
+#include "string_builder.h"
+#define LINEAR_MATH_IMPLEMENTATION
 #include "linear_math.h"
+#define LOG_IMPLEMENTATION
+#include "log.h"
+
+#else
+
 #include "string_builder.h"
 #include "log.h"
+#include "linear_math.h"
+
+#endif // UTILITY_IMPLEMENTATION
 
 float lerp(float s, float e, float t);
 float smoothstep(float x);
@@ -96,13 +111,6 @@ long file_len(FILE* handle);
 File load_file(const char* path);
 
 #ifdef UTILITY_IMPLEMENTATION
-
-#define STRING_BUILDER_IMPLEMENTATION
-#include "string_builder.h"
-#define LINEAR_MATH_IMPLEMENTATION
-#include "linear_math.h"
-#define LOG_IMPLEMENTATION
-#include "log.h"
 
 Canvas make_canvas(int width, int height) {
     Canvas canvas;

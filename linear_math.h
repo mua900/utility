@@ -22,6 +22,8 @@ typedef struct {
 
 vec3 vec3_add(vec3 v, vec3 u);
 vec3 vec3_sub(vec3 v, vec3 u);
+vec3 vec3_perpendicular(vec3 v);
+vec3 vec3_cross(vec3 v, vec3 u);
 
 vec2 to_v2(vec3 v);
 
@@ -384,6 +386,28 @@ vec3 vec3_add(vec3 v, vec3 u) {
 
 vec3 vec3_sub(vec3 v, vec3 u) {
     return (vec3){.x = v.x - u.x, .y = v.y - u.y, .z = v.z - u.z};
+}
+
+vec3 vec3_perpendicular(vec3 v) {
+    vec3 result;
+
+    if (fabsf(v.x) <= fabsf(v.y) && fabsf(v.x) <= fabsf(v.z)) {
+        result = (vec3){0.0, -v.z, v.y};
+    } else if (fabsf(v.y) <= fabsf(v.x) && fabsf(v.y) <= fabsf(v.z)) {
+        result = (vec3){-v.z, 0.0, v.x};
+    } else {
+        result = (vec3){-v.y, v.x, 0.0};
+    }
+
+    return result;
+}
+
+vec3 vec3_cross(vec3 v, vec3 u) {
+    return (vec3) {
+        .x = v.y * u.z - v.z * u.y,
+        .y = v.z * u.x - v.x * u.z,
+        .z = v.x * u.y - v.y * u.x
+    };
 }
 
 // returns the determinant of the matrix whose columns are the parameter vectors
