@@ -17,6 +17,7 @@ extern "C" {
 #include <assert.h>
 
 #define CSTRING_LENGTH(s) (sizeof(s)-1)
+#define TO_STRING(s) ((String){.data = s, .size = CSTRING_LENGTH(s)})
   
 typedef struct {
     const char* data;

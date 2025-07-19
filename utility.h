@@ -112,8 +112,15 @@ typedef struct {
     int error_code;  // 0 if no errors
 } File;
 
+typedef struct {
+    File* data;
+    int size;
+} File_List;
+
 long file_len(FILE* handle);
 File load_file(const char* path);
+
+String file_extension(const char* path);
 
 #ifdef UTILITY_IMPLEMENTATION
 
@@ -331,6 +338,24 @@ void print_binary(u64 n) {
     }
 
     printf("%s\n", b);
+}
+
+String file_extension(const char* path) {
+    const char* p = path;
+    int len = 0;
+    while (*p) {
+        p++;
+        len++;
+    }
+
+    int index = len;
+    while (*p != '.' && index) {
+        p--;
+        index--;
+    }
+
+    int size = len - index;
+    return (String){.data = path + index, .size = size};
 }
 
 #endif  // UTILITY_IMPLEMENTATION
