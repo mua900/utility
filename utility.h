@@ -11,13 +11,12 @@
 #define LINEAR_MATH_IMPLEMENTATION
 #define LOG_IMPLEMENTATION
 
-#else
+#endif // UTILITY_IMPLEMENTATION
 
 #include "string_builder.h"
 #include "log.h"
 #include "linear_math.h"
 
-#endif // UTILITY_IMPLEMENTATION
 
 float lerp(float s, float e, float t);
 float smoothstep(float x);
