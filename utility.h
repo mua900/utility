@@ -8,11 +8,8 @@
 #ifdef UTILITY_IMPLEMENTATION  // if implementation is defined than define the implementation for the other ones as well
 
 #define STRING_BUILDER_IMPLEMENTATION
-#include "string_builder.h"
 #define LINEAR_MATH_IMPLEMENTATION
-#include "linear_math.h"
 #define LOG_IMPLEMENTATION
-#include "log.h"
 
 #else
 
@@ -33,10 +30,18 @@ void panic(char const * const);
 typedef uint8_t  u8;
 typedef uint16_t u16;
 typedef uint32_t u32;
+typedef uint64_t u64;
+
+typedef int8_t  s8;
+typedef int16_t s16;
+typedef int32_t s32;
+typedef int64_t s64;
 
 #define BIT(x) (1 << x)
 
 #define CLAMP(x, l, h) (((x) > (h)) ? (h) : ((x) < (l)) ? (l) : (x))
+
+void print_binary(u64 n);
 
 typedef struct {
     float r, g, b, a;
@@ -316,6 +321,16 @@ float lerp(float s, float e, float t) {
 float smoothstep(float x) {
     x = CLAMP(x, 0, 1);
     return (x * x) * (3 - 2 * x);
+}
+
+void print_binary(u64 n) {
+    char b[65];
+    b[64] = '\0';
+    for (int i = 0; i < 64; i++) {
+        b[i] = ((n >> i) & 1) ? '1' : '0';
+    }
+
+    printf("%s\n", b);
 }
 
 #endif  // UTILITY_IMPLEMENTATION
