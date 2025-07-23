@@ -67,7 +67,7 @@ Color to_color(FColor fcolor);
 #define ARRAY_SIZE(array) sizeof(array) / sizeof(array[0])
 
 #define ASSERT(condition) do \
-  {if (!condition) {fprintf(stderr,"Assertion %s failed\n", #condition); exit(1);}} while(0);
+  {if (!(condition)) {fprintf(stderr,"Assertion %s failed\n", #condition); exit(1);}} while(0);
 
 [[noreturn]]
 void panic_and_abort(char const * const msg);
