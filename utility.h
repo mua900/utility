@@ -36,7 +36,7 @@ typedef int16_t s16;
 typedef int32_t s32;
 typedef int64_t s64;
 
-#define BIT(x) (1 << x)
+#define BIT(x) (((u64)1) << x)
 
 #define CLAMP(x, l, h) (((x) > (h)) ? (h) : ((x) < (l)) ? (l) : (x))
 
