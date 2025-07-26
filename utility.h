@@ -36,7 +36,7 @@ typedef int16_t s16;
 typedef int32_t s32;
 typedef int64_t s64;
 
-#define BIT(x) (((u64)1) << x)
+#define BIT(x) (1 << x)
 
 #define CLAMP(x, l, h) (((x) > (h)) ? (h) : ((x) < (l)) ? (l) : (x))
 
@@ -333,7 +333,7 @@ void print_binary(u64 n) {
     char b[65];
     b[64] = '\0';
     for (int i = 0; i < 64; i++) {
-        b[i] = ((n >> i) & 1) ? '1' : '0';
+        b[64 - i] = ((n >> i) & 1) ? '1' : '0';
     }
 
     printf("%s\n", b);
